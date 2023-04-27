@@ -1,4 +1,5 @@
 import { IoMdStarHalf } from "react-icons/io";
+import { AiFillFire } from "react-icons/ai";
 import {
   BannerContainer,
   DescriptionContainer,
@@ -57,7 +58,29 @@ export default function HomePage() {
                   </div>
                 </div>
               </ProductItem>
-
+            </ProductList>
+          </article>
+        </ProductsSections>
+        <ProductsSections>
+          <article>
+            <h6>Os mais comprados!<AiFillFire style={{color: 'red'}, {fontSize: '26px'}}/></h6>
+            <ProductList>
+              <ProductItem>
+                <img src="" alt="" />
+                <h3>Titulo do produto</h3>
+                <DescriptionContainer>
+                  <span>
+                    Descriçãoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                  </span>
+                </DescriptionContainer>
+                <div>
+                  R$ 50,00
+                  <div>
+                    <IoMdStarHalf />
+                    (4,5)
+                  </div>
+                </div>
+              </ProductItem>
             </ProductList>
           </article>
         </ProductsSections>
