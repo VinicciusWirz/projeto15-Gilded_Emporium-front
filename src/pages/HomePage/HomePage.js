@@ -63,7 +63,10 @@ export default function HomePage() {
         </ProductsSections>
         <ProductsSections>
           <article>
-            <h6>Os mais comprados!<AiFillFire style={{color: 'red'}, {fontSize: '26px'}}/></h6>
+            <h6>
+              Os mais comprados!
+              <AiFillFire style={({ color: "red" }, { fontSize: "26px" })} />
+            </h6>
             <ProductList>
               <ProductItem>
                 <img src="" alt="" />
