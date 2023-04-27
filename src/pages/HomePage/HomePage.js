@@ -27,7 +27,7 @@ export default function HomePage() {
             <p>Decoração</p>
           </button>
         </MenuNav>
-
+        <ProductsSections></ProductsSections>
       </MainView>
     </PageContainer>
   );
@@ -99,4 +99,9 @@ const MenuNav = styled.nav`
       /* padding-right: 50px; */
     }
   }
+`;
+
+const ProductsSections = styled.article`
+height: 500px;
+width: 100%;
 `;
