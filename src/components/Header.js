@@ -1,26 +1,43 @@
 import styled from "styled-components";
 import { GiHamburgerMenu } from "react-icons/gi";
-import {  IoPersonOutline } from "react-icons/io5";
+import { IoPersonOutline } from "react-icons/io5";
 import { BsCart } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
+import { useContext } from "react";
+import AuthContext from "../../Context/AuthContext";
 
 export default function Header() {
+  const authContext = useContext(AuthContext);
+
   return (
     <Wrapper>
       <h1>The Gilded Emporium</h1>
       <SearchArea>
         <GiHamburgerMenu size={30} />
         <input type="text" placeholder="Pesquisar" />
-        <span><FiSearch size={25} /></span>
+        <span>
+          <FiSearch size={25} />
+        </span>
       </SearchArea>
       <ClientArea>
         <Auth>
           <IoPersonOutline size={25} />
-          <p>Minha conta <br/> Entrar/Cadastro</p>
+          {authContext.token ? (
+            <p>
+              Olá, <br /> {authContext.name}
+            </p>
+          ) : (
+            <p>
+              Minha conta <br /> <a href="login">Entrar</a>/
+              <a href="cadastro">Cadastro</a>
+            </p>
+          )}
         </Auth>
         <Cart>
-          <BsCart size={25}/>
-          <p>Seu carrinho <br/> está vazio</p>
+          <BsCart size={25} />
+          <p>
+            Seu carrinho <br /> está vazio
+          </p>
         </Cart>
       </ClientArea>
     </Wrapper>
@@ -35,7 +52,7 @@ const Wrapper = styled.header`
   justify-content: space-evenly;
   position: fixed;
   top: 0;
-  color: #0C0404;
+  color: #0c0404;
   width: 100%;
   height: 20%;
   font-weight: 500;
@@ -46,7 +63,7 @@ const Wrapper = styled.header`
     font-size: 25px;
     padding: 0;
     margin: 2.5rem 1.5rem;
-    line-height: 40px;
+    line-height: 25px;
     width: auto;
   }
 `;
@@ -67,7 +84,7 @@ const SearchArea = styled.div`
     text-align: center;
     align-items: center;
     border: 1px solid transparent;
-    background-color: #D3D3D3;
+    background-color: #d3d3d3;
   }
 
   span {
@@ -95,7 +112,16 @@ const Auth = styled.div`
     margin-left: 5px;
     line-height: 18px;
   }
-`
+
+  a {
+    color: #0c0404;
+    text-decoration: none;
+  }
+
+  a::visited {
+    color: #777;
+  }
+`;
 
 const Cart = styled.div`
   display: flex;
@@ -109,4 +135,4 @@ const Cart = styled.div`
     margin-left: 5px;
     line-height: 18px;
   }
-`
+`;
