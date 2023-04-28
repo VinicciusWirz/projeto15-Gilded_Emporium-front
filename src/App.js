@@ -20,7 +20,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/cadastro" element={<SignUp />} />
-              <Route path="login" element={<SignIn />} />
+              <Route path="/login" element={<SignIn />} />
             </Routes>
           </BrowserRouter>
         </PagesContainer>

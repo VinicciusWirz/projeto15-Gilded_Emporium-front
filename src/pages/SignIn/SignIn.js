@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../Context/AuthContext";
+import AuthContext from "../../Context/AuthContext";
 
 export default function SignIn() {
   const [form, setForm] = useState({ email: "", password: "" });
