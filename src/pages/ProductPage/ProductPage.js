@@ -1,7 +1,12 @@
+import { useState } from "react";
+import { useEffect } from "react";
 import { FaStar } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 import MenuNav from "../../components/MenuNav";
+import apiProducts from "../../services/apiProducts";
 import {
   BannerContainer,
+  ImageContainer,
   ItemDescription,
   Keywords,
   MainView,
@@ -13,6 +18,16 @@ import {
 } from "./style";
 
 export default function ProductPage() {
+  const [product, setProduct] = useState({});
+  const params = useParams();
+  useEffect(() => {
+    apiProducts
+      .getProductsID(params.id)
+      .then((res) => {
+        setProduct(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <PageContainer>
       <BannerContainer>
@@ -24,40 +39,29 @@ export default function ProductPage() {
       <MainView>
         <MenuNav />
         <ProductContainer>
-          <div>
-            <img src="https://cdn.discordapp.com/attachments/376089859372089355/1101242522249990164/header_banner_1.png" />
-          </div>
+          <ImageContainer>
+            <img src={product?.picture} alt={product?.name} />
+          </ImageContainer>
 
           <ProductInfo>
             <div>
-              <h4>
-                Nome do
-                produto
-              </h4>
+              <h4>{product?.name}</h4>
             </div>
             <Rate>
               <FaStar style={{ color: "rgb(250,250,0)" }} /> (4,5)
             </Rate>
-            <ItemDescription>
-              "Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-              accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-              quae ab illo inventore veritatis et quasi architecto beatae vitae
-              dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
-              aspernatur aut odit aut fugit, sed quia consequuntur magni dolores
-              eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam
-              est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci
-              velit, sed quia non numquam eius modi tempora incidunt ut labore
-              et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima
-              veniam, quis nostrum exercitationem ullam corporis suscipit
-              laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem
-              vel eum iure reprehenderit qui in ea voluptate velit esse quam
-              nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo
-              voluptas nulla pariatur?"
-            </ItemDescription>
-            <Keywords>Banana, sabonete</Keywords>
+            <ItemDescription>{product.description}</ItemDescription>
+            <Keywords>{product.keywords?.join(", ")}</Keywords>
             <OrderWrapper>
-              R$ 00,00
-              <button>Adicionar ao carrinho</button>
+              R${" "}
+              {(product.price / 100).toLocaleString("pt-BR", {
+                style: "decimal",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+              <button onClick={() => console.log(product._id)}>
+                Adicionar ao carrinho
+              </button>
             </OrderWrapper>
           </ProductInfo>
         </ProductContainer>
