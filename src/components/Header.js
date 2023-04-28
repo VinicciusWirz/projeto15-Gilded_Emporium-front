@@ -4,7 +4,7 @@ import { IoPersonOutline } from "react-icons/io5";
 import { BsCart } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { useContext } from "react";
-import AuthContext from "../../Context/AuthContext";
+import AuthContext from "../Context/AuthContext";
 
 export default function Header() {
   const authContext = useContext(AuthContext);

@@ -1,6 +1,42 @@
-import styled from "styled-components";
+import { FaStarHalfAlt, FaStar, FaRegStar } from "react-icons/fa";
+import { AiFillFire } from "react-icons/ai";
+import {
+  BannerContainer,
+  DescriptionContainer,
+  MainView,
+  MenuNav,
+  PageContainer,
+  ProductItem,
+  ProductList,
+  ProductsSections,
+} from "./styles";
+import { useEffect } from "react";
+import apiProducts from "../../services/apiProducts";
+import { useState } from "react";
 
 export default function HomePage() {
+  const [newProducts, setNewProducts] = useState([]);
+  const [hotDeals, setHotDeals] = useState([]);
+  useEffect(() => {
+    apiProducts
+      .getProducts()
+      .then((res) => {
+        const products = [...res.data];
+        const middleIndex = Math.floor(products.length / 2);
+        const firstHalf = products.slice(0, middleIndex).map((p) => {
+          return { ...p, review: (Math.random() * 5).toFixed(1) };
+        });
+        const secondHalf = products.slice(middleIndex).map((p) => {
+          return { ...p, review: (Math.random() * 5).toFixed(1) };
+        });
+        setNewProducts(firstHalf);
+        setHotDeals(secondHalf);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <PageContainer>
       <BannerContainer>
@@ -12,96 +48,105 @@ export default function HomePage() {
       <MainView>
         <MenuNav>
           <button>
-            <p>Ofertas do dia</p>
+            <div>
+              <p>Ofertas do dia</p>
+            </div>
           </button>
           <button>
-            <p>Eletrodomésticos</p>
+            <div>
+              <p>Eletrodomésticos</p>
+            </div>
           </button>
           <button>
-            <p>Eletrônicos</p>
+            <div>
+              <p>Eletrônicos</p>
+            </div>
           </button>
           <button>
-            <p>Instrumentos</p>
+            <div>
+              <p>Instrumentos</p>
+            </div>
           </button>
           <button>
-            <p>Decoração</p>
+            <div>
+              <p>Decoração</p>
+            </div>
           </button>
         </MenuNav>
-        <ProductsSections></ProductsSections>
+        <ProductsSections>
+          <article>
+            <h6>Se liga nos lançamentos!</h6>
+            <ProductList>
+              {newProducts.map((p) => (
+                <ProductItem onClick={() => console.log(p._id)} key={p._id}>
+                  <img src={p.picture} alt={p.name} />
+                  <h3>{p.name}</h3>
+                  <DescriptionContainer>
+                    <span>{p.description}</span>
+                  </DescriptionContainer>
+                  <div>
+                    R${" "}
+                    {(p.price / 100).toLocaleString("pt-BR", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    <div>
+                      {Number(p.review) > 4.5 ? (
+                        <FaStar style={{ color: "rgb(250,250,0)" }} />
+                      ) : Number(p.review) > 1 ? (
+                        <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
+                      ) : (
+                        <FaRegStar style={{ color: "rgb(250,250,0)" }} />
+                      )}
+                      ({p.review})
+                    </div>
+                  </div>
+                </ProductItem>
+              ))}
+            </ProductList>
+          </article>
+        </ProductsSections>
+        <ProductsSections>
+          <article>
+            <h6>
+              Os mais comprados!
+              <AiFillFire
+                style={{ color: "rgb(240,15,0)", fontSize: "26px" }}
+              />
+            </h6>
+            <ProductList>
+              {hotDeals.map((p) => (
+                <ProductItem onClick={() => console.log(p._id)} key={p._id}>
+                  <img src={p.picture} alt={p.name} />
+                  <h3>{p.name}</h3>
+                  <DescriptionContainer>
+                    <span>{p.description}</span>
+                  </DescriptionContainer>
+                  <div>
+                    R${" "}
+                    {(p.price / 100).toLocaleString("pt-BR", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    <div>
+                      {Number(p.review) > 4.5 ? (
+                        <FaStar style={{ color: "rgb(250,250,0)" }} />
+                      ) : Number(p.review) > 1 ? (
+                        <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
+                      ) : (
+                        <FaRegStar style={{ color: "rgb(250,250,0)" }} />
+                      )}
+                      ({p.review})
+                    </div>
+                  </div>
+                </ProductItem>
+              ))}
+            </ProductList>
+          </article>
+        </ProductsSections>
       </MainView>
     </PageContainer>
   );
 }
-
-const PageContainer = styled.div`
-  * {
-    box-sizing: border-box;
-    font-family: "Raleway";
-  }
-  button {
-    border: none;
-    cursor: pointer;
-    background: none;
-  }
-  div {
-    background: red;
-    width: 100%;
-  }
-`;
-const BannerContainer = styled.div`
-  object-fit: cover;
-  width: 100%;
-  height: 360px;
-  overflow: hidden;
-  z-index: 999;
-`;
-const MainView = styled.section`
-  background: red;
-  margin: 0px 72px;
-`;
-
-const MenuNav = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  border-radius: 0px 0px 5px 5px;
-  background: #ffff;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-  button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 20px 0px;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    display: flex;
-    align-items: center;
-    color: #000000;
-    p {
-      width: 100%;
-      height: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    &:not(:first-child) {
-      p {
-        border-left: 1px solid gray;
-      }
-    }
-    &:first-child {
-      font-weight: 700;
-      /* padding-left: 50px; */
-    }
-    &:last-child {
-      /* padding-right: 50px; */
-    }
-  }
-`;
-
-const ProductsSections = styled.article`
-height: 500px;
-width: 100%;
-`;
