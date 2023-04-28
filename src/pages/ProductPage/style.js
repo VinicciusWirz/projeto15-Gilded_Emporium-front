@@ -57,14 +57,6 @@ export const ProductInfo = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap: 20px;
-  div:nth-child(1) {
-    display: flex;
-    word-break: break-word;
-    align-items: center;
-    max-width: 100%;
-    border-bottom: 1px solid lightgray;
-    padding-bottom: 15px;
-  }
   h4 {
     font-family: "Raleway";
     font-style: normal;
@@ -98,6 +90,8 @@ export const Rate = styled.span`
   font-weight: 100;
   font-size: 16px;
   line-height: 19px;
+  display: flex;
+  gap: 5px;
   align-items: center;
 `;
 
@@ -110,12 +104,10 @@ export const OrderWrapper = styled.div`
   font-size: 24px;
   line-height: 21px;
   display: flex;
-  align-items: center;
+  align-items: start;
   color: #000000;
   width: 100%;
   justify-content: space-between;
-  padding-left: 25px;
-  padding-right: 25px;
   button {
     width: 142px;
     height: 60px;
@@ -131,5 +123,17 @@ export const OrderWrapper = styled.div`
     align-items: center;
     text-align: center;
     color: #000000;
+  }
+`;
+
+export const InfoHeader = styled.div`
+  div:nth-child(1) {
+    display: flex;
+    word-break: break-word;
+    align-items: center;
+    max-width: 100%;
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 15px;
+    margin-bottom: 5px;
   }
 `;
