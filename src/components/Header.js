@@ -5,7 +5,7 @@ import { BsCart } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { useContext } from "react";
 import AuthContext from "../Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const authContext = useContext(AuthContext);
@@ -30,8 +30,8 @@ export default function Header() {
             </p>
           ) : (
             <p>
-              Minha conta <br /> <a href="login">Entrar</a>/
-              <a href="cadastro">Cadastro</a>
+              Minha conta <br /> <Link to="/login">Entrar</Link>/
+              <Link to="/cadastro">Cadastro</Link>
             </p>
           )}
         </Auth>

@@ -67,7 +67,7 @@ export default function ProductPage() {
         <MenuNav />
         <ProductContainer>
           <ImageContainer>
-            <img src={product?.picture} alt={product?.name} />
+            <img src={product.picture} alt={product.name} />
           </ImageContainer>
 
           <ProductInfo>
