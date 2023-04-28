@@ -96,7 +96,7 @@ export default function SignUp() {
             Cadastrar
           </button>
         </InputField>
-        <Link to={"/"}>
+        <Link to={"/login"}>
           Já tem uma conta? <br /> Clique aqui para fazer login
         </Link>
       </Container>

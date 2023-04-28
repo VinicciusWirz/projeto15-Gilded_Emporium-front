@@ -5,13 +5,15 @@ import { BsCart } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { useContext } from "react";
 import AuthContext from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
 
   return (
     <Wrapper>
-      <h1>The Gilded Emporium</h1>
+      <h1 onClick={() => navigate("/")}>The Gilded Emporium</h1>
       <SearchArea>
         <GiHamburgerMenu size={30} />
         <input type="text" placeholder="Pesquisar" />
@@ -65,6 +67,7 @@ const Wrapper = styled.header`
     margin: 2.5rem 1.5rem;
     line-height: 25px;
     width: auto;
+    cursor: pointer;
   }
 `;
 

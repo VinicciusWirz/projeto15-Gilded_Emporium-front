@@ -4,7 +4,6 @@ import {
   BannerContainer,
   DescriptionContainer,
   MainView,
-  MenuNav,
   PageContainer,
   ProductItem,
   ProductList,
@@ -13,10 +12,13 @@ import {
 import { useEffect } from "react";
 import apiProducts from "../../services/apiProducts";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import MenuNav from "../../components/MenuNav";
 
 export default function HomePage() {
   const [newProducts, setNewProducts] = useState([]);
   const [hotDeals, setHotDeals] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     apiProducts
       .getProducts()
@@ -46,39 +48,13 @@ export default function HomePage() {
         />
       </BannerContainer>
       <MainView>
-        <MenuNav>
-          <button>
-            <div>
-              <p>Ofertas do dia</p>
-            </div>
-          </button>
-          <button>
-            <div>
-              <p>Eletrodomésticos</p>
-            </div>
-          </button>
-          <button>
-            <div>
-              <p>Eletrônicos</p>
-            </div>
-          </button>
-          <button>
-            <div>
-              <p>Instrumentos</p>
-            </div>
-          </button>
-          <button>
-            <div>
-              <p>Decoração</p>
-            </div>
-          </button>
-        </MenuNav>
+        <MenuNav/>
         <ProductsSections>
           <article>
             <h6>Se liga nos lançamentos!</h6>
             <ProductList>
               {newProducts.map((p) => (
-                <ProductItem onClick={() => console.log(p._id)} key={p._id}>
+                <ProductItem onClick={() => navigate(`/produto/${p._id}`)} key={p._id}>
                   <img src={p.picture} alt={p.name} />
                   <h3>{p.name}</h3>
                   <DescriptionContainer>
