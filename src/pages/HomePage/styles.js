@@ -1,5 +1,14 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
+// animations
+const wobble = keyframes`
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-02%) rotate(-2deg); }
+  75% { transform: translateX(2%) rotate(2deg); }
+  100% { transform: translateX(0); }
+  `;
+
+//styles
 export const PageContainer = styled.div`
   * {
     box-sizing: border-box;
@@ -44,24 +53,26 @@ export const MenuNav = styled.nav`
     display: flex;
     align-items: center;
     color: #000000;
+    :hover {
+      p {
+        transform: scale(1.08);
+      }
+    }
     p {
       width: 100%;
       height: 25px;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: transform 0.1s ease-in-out;
     }
     &:not(:first-child) {
-      p {
+      div {
         border-left: 1px solid gray;
       }
     }
     &:first-child {
       font-weight: 700;
-      /* padding-left: 50px; */
-    }
-    &:last-child {
-      /* padding-right: 50px; */
     }
   }
 `;
@@ -84,7 +95,7 @@ export const ProductsSections = styled.article`
     h6 {
       font-weight: 700;
       margin-left: 10px;
-      font-size: 19px;
+      font-size: 25px;
     }
   }
 `;
@@ -124,7 +135,7 @@ export const ProductList = styled.ul`
 
 export const ProductItem = styled.li`
   width: 232px;
-  height: 298px;
+  height: 330px;
   background: #ffffff;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
@@ -132,7 +143,12 @@ export const ProductItem = styled.li`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
+  cursor: pointer;
+  :hover {
+    animation-name: ${wobble};
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+  }
   div {
     margin-top: 0;
     width: 100%;
@@ -145,11 +161,17 @@ export const ProductItem = styled.li`
     line-height: 21px;
     div {
       width: auto;
+      gap: 5px;
     }
   }
   img {
     width: 212px;
+    min-width: 212px;
+    max-width: 212px;
     height: 180px;
+    max-height: 180px;
+    min-height: 180px;
+    object-fit: cover;
     filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.25));
     border-radius: 5px;
   }
@@ -158,6 +180,12 @@ export const ProductItem = styled.li`
     font-weight: 700;
     font-size: 18px;
     line-height: 21px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    text-overflow: ellipsis;
   }
 `;
 

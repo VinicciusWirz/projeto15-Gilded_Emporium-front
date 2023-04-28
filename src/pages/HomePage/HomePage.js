@@ -1,4 +1,4 @@
-import { IoMdStarHalf } from "react-icons/io";
+import { FaStarHalfAlt, FaStar, FaRegStar } from "react-icons/fa";
 import { AiFillFire } from "react-icons/ai";
 import {
   BannerContainer,
@@ -10,8 +10,33 @@ import {
   ProductList,
   ProductsSections,
 } from "./styles";
+import { useEffect } from "react";
+import apiProducts from "../../services/apiProducts";
+import { useState } from "react";
 
 export default function HomePage() {
+  const [newProducts, setNewProducts] = useState([]);
+  const [hotDeals, setHotDeals] = useState([]);
+  useEffect(() => {
+    apiProducts
+      .getProducts()
+      .then((res) => {
+        const products = [...res.data];
+        const middleIndex = Math.floor(products.length / 2);
+        const firstHalf = products.slice(0, middleIndex).map((p) => {
+          return { ...p, review: (Math.random() * 5).toFixed(1) };
+        });
+        const secondHalf = products.slice(middleIndex).map((p) => {
+          return { ...p, review: (Math.random() * 5).toFixed(1) };
+        });
+        setNewProducts(firstHalf);
+        setHotDeals(secondHalf);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <PageContainer>
       <BannerContainer>
@@ -23,41 +48,62 @@ export default function HomePage() {
       <MainView>
         <MenuNav>
           <button>
-            <p>Ofertas do dia</p>
+            <div>
+              <p>Ofertas do dia</p>
+            </div>
           </button>
           <button>
-            <p>Eletrodomésticos</p>
+            <div>
+              <p>Eletrodomésticos</p>
+            </div>
           </button>
           <button>
-            <p>Eletrônicos</p>
+            <div>
+              <p>Eletrônicos</p>
+            </div>
           </button>
           <button>
-            <p>Instrumentos</p>
+            <div>
+              <p>Instrumentos</p>
+            </div>
           </button>
           <button>
-            <p>Decoração</p>
+            <div>
+              <p>Decoração</p>
+            </div>
           </button>
         </MenuNav>
         <ProductsSections>
           <article>
             <h6>Se liga nos lançamentos!</h6>
             <ProductList>
-              <ProductItem>
-                <img src="" alt="" />
-                <h3>Titulo do produto</h3>
-                <DescriptionContainer>
-                  <span>
-                    Descriçãoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                  </span>
-                </DescriptionContainer>
-                <div>
-                  R$ 50,00
+              {newProducts.map((p) => (
+                <ProductItem onClick={() => console.log(p._id)} key={p._id}>
+                  <img src={p.picture} alt={p.name} />
+                  <h3>{p.name}</h3>
+                  <DescriptionContainer>
+                    <span>{p.description}</span>
+                  </DescriptionContainer>
                   <div>
-                    <IoMdStarHalf />
-                    (4,5)
+                    R${" "}
+                    {(p.price / 100).toLocaleString("pt-BR", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    <div>
+                      {Number(p.review) > 4.5 ? (
+                        <FaStar style={{ color: "rgb(250,250,0)" }} />
+                      ) : Number(p.review) > 1 ? (
+                        <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
+                      ) : (
+                        <FaRegStar style={{ color: "rgb(250,250,0)" }} />
+                      )}
+                      ({p.review})
+                    </div>
                   </div>
-                </div>
-              </ProductItem>
+                </ProductItem>
+              ))}
             </ProductList>
           </article>
         </ProductsSections>
@@ -65,25 +111,38 @@ export default function HomePage() {
           <article>
             <h6>
               Os mais comprados!
-              <AiFillFire style={({ color: "red" }, { fontSize: "26px" })} />
+              <AiFillFire
+                style={{ color: "rgb(240,15,0)", fontSize: "26px" }}
+              />
             </h6>
             <ProductList>
-              <ProductItem>
-                <img src="" alt="" />
-                <h3>Titulo do produto</h3>
-                <DescriptionContainer>
-                  <span>
-                    Descriçãoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                  </span>
-                </DescriptionContainer>
-                <div>
-                  R$ 50,00
+              {hotDeals.map((p) => (
+                <ProductItem onClick={() => console.log(p._id)} key={p._id}>
+                  <img src={p.picture} alt={p.name} />
+                  <h3>{p.name}</h3>
+                  <DescriptionContainer>
+                    <span>{p.description}</span>
+                  </DescriptionContainer>
                   <div>
-                    <IoMdStarHalf />
-                    (4,5)
+                    R${" "}
+                    {(p.price / 100).toLocaleString("pt-BR", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    <div>
+                      {Number(p.review) > 4.5 ? (
+                        <FaStar style={{ color: "rgb(250,250,0)" }} />
+                      ) : Number(p.review) > 1 ? (
+                        <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
+                      ) : (
+                        <FaRegStar style={{ color: "rgb(250,250,0)" }} />
+                      )}
+                      ({p.review})
+                    </div>
                   </div>
-                </div>
-              </ProductItem>
+                </ProductItem>
+              ))}
             </ProductList>
           </article>
         </ProductsSections>
