@@ -42,7 +42,7 @@ export default function SignUp() {
     }
 
     try {
-      await axios.post(`${URL}/cadastro`, { name, email, password });
+      await axios.post(`${URL}/sign-up`, { name, email, password });
       navigate("/");
     } catch (err) {
       console.log(err);
