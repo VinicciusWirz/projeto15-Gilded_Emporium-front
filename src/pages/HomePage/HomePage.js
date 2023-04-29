@@ -13,8 +13,10 @@ import MenuNav from "../../components/MenuNav";
 import ProductsListItems from "./ProductsListItems";
 
 export default function HomePage() {
-  const [newProducts, setNewProducts] = useState([]);
+  const [newProducts, setNewProducts] = useState();
   const [hotDeals, setHotDeals] = useState([]);
+  const arrayPlaceholder = [...Array(10)];
+
   useEffect(() => {
     apiProducts
       .getProducts()
@@ -45,9 +47,13 @@ export default function HomePage() {
           <article>
             <h6>Se liga nos lançamentos!</h6>
             <ProductListStyle>
-              {newProducts.map((p) => (
-                <ProductsListItems item={p} key={p._id} />
-              ))}
+              {!newProducts
+                ? arrayPlaceholder.map((e, index) => (
+                    <ProductsListItems key={index} />
+                  ))
+                : newProducts.map((p) => (
+                    <ProductsListItems item={p} key={p._id} />
+                  ))}
             </ProductListStyle>
           </article>
         </ProductsSections>
@@ -60,9 +66,13 @@ export default function HomePage() {
               />
             </h6>
             <ProductListStyle>
-              {hotDeals.map((p) => (
-                <ProductsListItems item={p} key={p._id} />
-              ))}
+              {!hotDeals
+                ? arrayPlaceholder.map((e, index) => (
+                    <ProductsListItems key={index} />
+                  ))
+                : hotDeals.map((p) => (
+                    <ProductsListItems item={p} key={p._id} />
+                  ))}
             </ProductListStyle>
           </article>
         </ProductsSections>

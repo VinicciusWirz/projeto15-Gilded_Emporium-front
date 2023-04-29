@@ -112,7 +112,7 @@ export default function ProductPage() {
                   <Skeleton style={{ height: "19px", width: "45px" }} />
                 ) : (
                   <>
-                    {product.rate === 0 && (
+                    {Number(product.rate) === 0 && (
                       <FaRegStar style={{ color: "rgb(250,250,0)" }} />
                     )}
                     {rateMap.length >= 1 &&

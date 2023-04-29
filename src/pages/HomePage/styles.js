@@ -169,3 +169,10 @@ export const DescriptionContainer = styled.section`
     text-overflow: ellipsis;
   }
 `;
+
+export const LastSkeleton = styled.div`
+span{
+  width:100%;
+}
+
+`

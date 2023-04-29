@@ -1,9 +1,29 @@
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
-import { DescriptionContainer, ProductItem } from "./styles";
+import { DescriptionContainer, LastSkeleton, ProductItem } from "./styles";
 
 export default function ProductsListItems({ item }) {
   const navigate = useNavigate();
+  if (!item) {
+    return (
+      <>
+        <ProductItem>
+          <Skeleton width="212px" height="180px" />
+          <h3>
+            <Skeleton height="21px" />
+          </h3>
+          <DescriptionContainer>
+              <Skeleton height="50px"/>
+          </DescriptionContainer>
+          <LastSkeleton>
+            <Skeleton height="21px"/>
+          </LastSkeleton>
+        </ProductItem>
+      </>
+    );
+  }
   const { _id, name, picture, description, price, rate } = item;
   return (
     <>
