@@ -28,7 +28,7 @@ export default function SignIn() {
     try {
       const res = await axios.post(`${URL}/sign-in`, body);
       setToken(res.data.token);
-      setName(res.data.user.name);
+      setName(res.data.name);
       navigate("/");
     } catch (err) {
       alert(err.response.data.message);
