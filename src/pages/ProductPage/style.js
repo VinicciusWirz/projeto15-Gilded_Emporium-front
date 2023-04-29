@@ -10,9 +10,9 @@ export const PageContainer = styled.div`
     cursor: pointer;
     background: none;
   }
-  div {
+  /* div {
     width: 100%;
-  }
+  } */
 `;
 export const BannerContainer = styled.div`
   object-fit: cover;
@@ -41,8 +41,17 @@ export const ProductContainer = styled.article`
 `;
 export const ImageContainer = styled.div`
   display: flex;
+  min-width: 50%;
   max-width: 50%;
   margin-right: 10px;
+  span {
+    border-radius: 3px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    height: 404px;
+    align-self: center;
+    height: 404px;
+  }
   img {
     object-fit: contain;
     border-radius: 3px;
@@ -50,6 +59,7 @@ export const ImageContainer = styled.div`
     width: 100%;
     height: 404px;
     align-self: center;
+    height: 404px;
   }
 `;
 export const ProductInfo = styled.div`
@@ -57,6 +67,7 @@ export const ProductInfo = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap: 20px;
+  width: 100%;
   h4 {
     font-family: "Raleway";
     font-style: normal;
@@ -64,6 +75,7 @@ export const ProductInfo = styled.div`
     font-size: 26px;
     line-height: 31px;
     color: #000000;
+    width: 100%;
   }
 `;
 export const ItemDescription = styled.p`

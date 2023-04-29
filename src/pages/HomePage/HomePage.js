@@ -68,7 +68,7 @@ export default function HomePage() {
                       maximumFractionDigits: 2,
                     })}
                     <div>
-                      {Number(p.review) > 4.5 ? (
+                      {Number(p.review) >= 4.5 ? (
                         <FaStar style={{ color: "rgb(250,250,0)" }} />
                       ) : Number(p.review) > 1 ? (
                         <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
@@ -93,7 +93,7 @@ export default function HomePage() {
             </h6>
             <ProductList>
               {hotDeals.map((p) => (
-                <ProductItem onClick={() => console.log(p._id)} key={p._id}>
+                <ProductItem onClick={() => navigate(`/produto/${p._id}`)} key={p._id}>
                   <img src={p.picture} alt={p.name} />
                   <h3>{p.name}</h3>
                   <DescriptionContainer>
