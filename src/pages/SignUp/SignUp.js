@@ -47,7 +47,7 @@ export default function SignUp() {
         password,
         confirmPassword,
       });
-      navigate("/");
+      navigate("/login");
     } catch (err) {
       console.log(err);
     }
