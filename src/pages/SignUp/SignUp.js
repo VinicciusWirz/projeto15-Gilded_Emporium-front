@@ -88,7 +88,7 @@ export default function SignUp() {
             placeholder="Confirme a senha"
             value={confirmPassword}
             onChange={(e) => setconfirmPassword(e.target.value)}
-            name="setconfirmPassword"
+            name="confirmPassword"
             required
           />
 
