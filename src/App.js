@@ -8,6 +8,7 @@ import GlobalStyle from "./assets/css/GlobalStyle";
 import ResetStyle from "./assets/css/ResetStyle";
 import { AuthProvider } from "./Context/AuthContext";
 import ProductPage from "./pages/ProductPage/ProductPage";
+import { CartProvider } from "./Context/CartContext";
 
 function App() {
   return (
@@ -15,17 +16,19 @@ function App() {
       <ResetStyle />
       <GlobalStyle />
       <AuthProvider>
-        <PagesContainer>
-          <BrowserRouter>
-            <Header />
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/produto/:id" element={<ProductPage />} />
-              <Route path="/cadastro" element={<SignUp />} />
-              <Route path="/login" element={<SignIn />} />
-            </Routes>
-          </BrowserRouter>
-        </PagesContainer>
+        <CartProvider>
+          <PagesContainer>
+            <BrowserRouter>
+              <Header />
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/produto/:id" element={<ProductPage />} />
+                <Route path="/cadastro" element={<SignUp />} />
+                <Route path="/login" element={<SignIn />} />
+              </Routes>
+            </BrowserRouter>
+          </PagesContainer>
+        </CartProvider>
       </AuthProvider>
     </>
   );

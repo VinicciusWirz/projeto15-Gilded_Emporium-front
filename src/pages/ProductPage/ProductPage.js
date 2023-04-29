@@ -7,6 +7,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useParams, useSearchParams } from "react-router-dom";
 import MenuNav from "../../components/MenuNav";
 import AuthContext from "../../Context/AuthContext";
+import CartContext from "../../Context/CartContext";
 import apiCart from "../../services/apiCart";
 import apiProducts from "../../services/apiProducts";
 import {
@@ -27,6 +28,7 @@ export default function ProductPage() {
   const [product, setProduct] = useState();
   const params = useParams();
   const { token } = useContext(AuthContext);
+  const { cart, setCart } = useContext(CartContext);
   const [loadingCart, setLoadingCart] = useState(false);
   const [searchParams] = useSearchParams();
   const rate = searchParams.get("rate");
@@ -44,23 +46,37 @@ export default function ProductPage() {
   }, []);
 
   function addToCart(id) {
-    if (!token) {
-      return alert(
-        "você precisa fazer login para adicionar o item no carrinho"
-      );
+    if (token) {
+      setLoadingCart(true);
+      apiCart
+        .addProduct(id, token)
+        .then(() => {
+          alert("Produto adicionado ao carrinho");
+          setLoadingCart(false);
+        })
+        .catch((err) => {
+          alert(`Erro ${err.response.status}: ${err.response.data}`);
+          setLoadingCart(false);
+        });
+    } else {
+      localCart(id);
     }
-    setLoadingCart(true);
-    apiCart
-      .addProduct(id, token)
-      .then(() => {
-        alert("Produto adicionado ao carrinho");
-        setLoadingCart(false);
-      })
-      .catch((err) => {
-        alert(`Erro ${err.response.status}: ${err.response.data}`);
-        setLoadingCart(false);
-      });
   }
+
+  function localCart(id) {
+    const item = {
+      productId: id,
+    };
+    if (!cart) {
+      localStorage.setItem("cart", JSON.stringify([item]));
+      setCart([item]);
+    } else {
+      const newCart = [...cart, item];
+      localStorage.setItem("cart", JSON.stringify([...cart, item]));
+      setCart(newCart);
+    }
+  }
+
   return (
     <PageContainer>
       <BannerContainer>
@@ -99,9 +115,13 @@ export default function ProductPage() {
                     {rate === 0 && (
                       <FaRegStar style={{ color: "rgb(250,250,0)" }} />
                     )}
-                    {filledStars.length >= 1 && filledStars.map((s, index) => (
-                      <FaStar key={index} style={{ color: "rgb(250,250,0)" }} />
-                    ))}
+                    {filledStars.length >= 1 &&
+                      filledStars.map((s, index) => (
+                        <FaStar
+                          key={index}
+                          style={{ color: "rgb(250,250,0)" }}
+                        />
+                      ))}
                     {rate % 1 !== 0 && (
                       <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
                     )}
