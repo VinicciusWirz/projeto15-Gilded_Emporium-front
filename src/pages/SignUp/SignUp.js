@@ -8,7 +8,7 @@ export default function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [confirmPassword, setconfirmPassword] = useState("");
   const navigate = useNavigate();
 
   async function createAccount(e) {
@@ -17,14 +17,14 @@ export default function SignUp() {
     const URL = process.env.REACT_APP_API_BASE_URL;
 
     if (
-      password !== passwordConfirmation ||
+      password !== confirmPassword ||
       password.length < 6 ||
       name === "" ||
       email === "" ||
       password === "" ||
-      passwordConfirmation === ""
+      confirmPassword === ""
     ) {
-      if (password !== passwordConfirmation) {
+      if (password !== confirmPassword) {
         alert("As senhas não coincidem");
       }
       if (!password === "" && password.length < 6) {
@@ -34,7 +34,7 @@ export default function SignUp() {
         name === "" ||
         email === "" ||
         password === "" ||
-        passwordConfirmation === ""
+        confirmPassword === ""
       ) {
         alert("Preencha todos os campos");
       }
@@ -42,7 +42,7 @@ export default function SignUp() {
     }
 
     try {
-      await axios.post(`${URL}/sign-up`, { name, email, password });
+      await axios.post(`${URL}/sign-up`, { name, email, password, confirmPassword});
       navigate("/");
     } catch (err) {
       console.log(err);
@@ -86,9 +86,9 @@ export default function SignUp() {
           <input
             type="password"
             placeholder="Confirme a senha"
-            value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
-            name="passwordConfirmation"
+            value={confirmPassword}
+            onChange={(e) => setconfirmPassword(e.target.value)}
+            name="setconfirmPassword"
             required
           />
 
