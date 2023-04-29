@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useContext } from "react";
 import { useEffect } from "react";
-import { FaStar } from "react-icons/fa";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import MenuNav from "../../components/MenuNav";
 import AuthContext from "../../Context/AuthContext";
 import apiCart from "../../services/apiCart";
@@ -28,13 +28,16 @@ export default function ProductPage() {
   const params = useParams();
   const { token } = useContext(AuthContext);
   const [loadingCart, setLoadingCart] = useState(false);
+  const [searchParams] = useSearchParams();
+  const rate = searchParams.get("rate");
+  const filledStars = [...Array(Math.floor(rate))];
 
   useEffect(() => {
     //Ao cair no catch, enviar para a página 'em construção quando pronta'
     apiProducts
       .getProductsID(params.id)
       .then((res) => {
-        setProduct(res.data);
+        setProduct({ ...res.data, rate });
       })
       .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,7 +96,16 @@ export default function ProductPage() {
                   <Skeleton style={{ height: "19px", width: "45px" }} />
                 ) : (
                   <>
-                    <FaStar style={{ color: "rgb(250,250,0)" }} /> (4,5)
+                    {rate === 0 && (
+                      <FaRegStar style={{ color: "rgb(250,250,0)" }} />
+                    )}
+                    {filledStars.length >= 1 && filledStars.map((s, index) => (
+                      <FaStar key={index} style={{ color: "rgb(250,250,0)" }} />
+                    ))}
+                    {rate % 1 !== 0 && (
+                      <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
+                    )}
+                    ({Number(rate).toFixed(1)})
                   </>
                 )}
               </Rate>
@@ -103,9 +115,11 @@ export default function ProductPage() {
             </ItemDescription>
             <Keywords>
               {!product ? (
-                <Skeleton  width="40%"/>
+                <Skeleton width="40%" />
               ) : (
-                <>{product.category}, {product.keywords?.join(", ")}</>
+                <>
+                  {product.category}, {product.keywords.join(", ")}
+                </>
               )}
             </Keywords>
             <OrderWrapper>
@@ -122,7 +136,7 @@ export default function ProductPage() {
                 </>
               )}
               {!product ? (
-                <Skeleton width="142px" height="60px"/>
+                <Skeleton width="142px" height="60px" />
               ) : (
                 <button
                   onClick={() => addToCart(product._id)}

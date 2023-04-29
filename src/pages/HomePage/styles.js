@@ -57,7 +57,7 @@ export const ProductsSections = styled.article`
   }
 `;
 
-export const ProductList = styled.ul`
+export const ProductListStyle = styled.ul`
   height: 100%;
   max-width: 95%;
   overflow-x: scroll;
