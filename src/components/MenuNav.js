@@ -38,7 +38,10 @@ const MenuNavStyle = styled.nav`
   border-radius: 0px 0px 5px 5px;
   background: #ffff;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-  min-width: 90%;
+  min-width: 100%;
+  div{
+    width: 100%;
+  }
   button {
     display: flex;
     justify-content: center;

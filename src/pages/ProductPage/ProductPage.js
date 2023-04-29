@@ -37,8 +37,9 @@ export default function ProductPage() {
     apiProducts
       .getProductsID(params.id)
       .then((res) => {
+        const renderRate = [...Array(Math.floor(res.data.rate))];
         setProduct(res.data);
-        setRateMap([...Array(Math.floor(res.data.rate))]);
+        setRateMap(renderRate);
       })
       .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -124,7 +125,7 @@ export default function ProductPage() {
                     {product.rate % 1 !== 0 && (
                       <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
                     )}
-                    ({Number(product.rate).toFixed(1)})
+                    ({product.rate.replace(".", ",")})
                   </>
                 )}
               </Rate>
