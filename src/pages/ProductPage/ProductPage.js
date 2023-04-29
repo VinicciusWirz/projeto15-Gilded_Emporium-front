@@ -53,10 +53,11 @@ export default function ProductPage() {
     if (token) {
       setLoadingCart(true);
       apiCart
-        .addProduct(id, token)
+        .addCartProduct(id, token)
         .then(() => {
           alert("Produto adicionado ao carrinho");
           setLoadingCart(false);
+          sessionCart();
         })
         .catch((err) => {
           alert(`Erro ${err.response.status}: ${err.response.data}`);
@@ -66,7 +67,19 @@ export default function ProductPage() {
       localCart(id);
     }
   }
-
+  function sessionCart(id) {
+    const item = {
+      productId: id,
+    };
+    if (!cart) {
+      localStorage.setItem("sessionCart", JSON.stringify([item]));
+      setCart([item]);
+    } else {
+      const newCart = [...cart, item];
+      localStorage.setItem("sessionCart", JSON.stringify([...cart, item]));
+      setCart(newCart);
+    }
+  }
   function localCart(id) {
     const item = {
       productId: id,

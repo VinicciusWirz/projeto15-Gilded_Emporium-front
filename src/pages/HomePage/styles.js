@@ -71,7 +71,8 @@ export const ProductListStyle = styled.ul`
   display: flex;
   align-items: center;
   gap: 19px;
-  padding-left: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
   &::-webkit-scrollbar {
     width: 12px;
     height: 12px;

@@ -177,7 +177,7 @@ const Form = styled.form`
     gap: 9px;
   }
   input {
-    background: #fbfbfb;
+    background: #f2f2f2;
     box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
     border-radius: 9px;
     border: none;
@@ -194,7 +194,7 @@ const Form = styled.form`
       color: #7b7b7b;
     }
     &:focus {
-      outline: 1px solid gray;
+      outline: 1px solid #dbdbdb;
     }
   }
   button {

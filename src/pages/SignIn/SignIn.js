@@ -4,10 +4,13 @@ import axios from "axios";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../Context/AuthContext";
+import CartContext from "../../Context/CartContext";
+import apiCart from "../../services/apiCart";
 
 export default function SignIn() {
   const [form, setForm] = useState({ email: "", password: "" });
   const { setToken, setName } = useContext(AuthContext);
+  const { cart, setCart } = useContext(CartContext);
 
   const navigate = useNavigate();
 
@@ -34,13 +37,29 @@ export default function SignIn() {
         name: res.data.name,
       });
       localStorage.setItem("auth", localData);
+      if (res.data.cart.length === 0 && cart) {
+        unloadCart(res.data.token);
+      } else {
+        const serverCart = JSON.stringify(res.data.cart);
+        localStorage.setItem("sessionCart", serverCart);
+        setCart(res.data.cart);
+      }
 
       navigate("/");
     } catch (err) {
-      alert(err.response.message);
+      alert(`Erro ${err.status}: ${err.response.message}`);
     }
   }
 
+  function unloadCart(token) {
+    apiCart
+      .unloadCartProducts(cart, token)
+      .then((res) => {
+        const localData = JSON.stringify(cart);
+        localStorage.setItem("sessionCart", localData);
+      })
+      .catch((err) => console.log(err));
+  }
   return (
     <PageView>
       <Container>

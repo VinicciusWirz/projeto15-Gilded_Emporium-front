@@ -3,8 +3,10 @@ import { createContext, useState } from "react";
 const CartContext = createContext({});
 
 export function CartProvider({ children }) {
-  const localData = localStorage.getItem("cart");
-  const [cart, setCart] = useState(JSON.parse(localData));
+  const localData = JSON.parse(localStorage.getItem("cart"));
+  const sessionCart = JSON.parse(localStorage.getItem("sessionCart"));
+  const prior = sessionCart || localData || "";
+  const [cart, setCart] = useState(prior);
 
   return (
     <CartContext.Provider value={{ cart, setCart }}>

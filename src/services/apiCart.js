@@ -9,9 +9,15 @@ function configGen(token) {
     },
   };
 }
-function addProduct(id, token) {
+function addCartProduct(id, token) {
   return axios.post(url, { productId: id }, configGen(token));
 }
+function unloadCartProducts(cart, token) {
+  return axios.post(`${url}/unload`, { cart }, configGen(token));
+}
+function getCart(token) {
+  return axios.get(url, configGen(token));
+}
 
-const apiCart = { addProduct };
+const apiCart = { addCartProduct, unloadCartProducts, getCart };
 export default apiCart;
