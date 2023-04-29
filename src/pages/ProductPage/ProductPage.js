@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MenuNav from "../../components/MenuNav";
 import AuthContext from "../../Context/AuthContext";
 import CartContext from "../../Context/CartContext";
@@ -30,16 +30,15 @@ export default function ProductPage() {
   const { token } = useContext(AuthContext);
   const { cart, setCart } = useContext(CartContext);
   const [loadingCart, setLoadingCart] = useState(false);
-  const [searchParams] = useSearchParams();
-  const rate = searchParams.get("rate");
-  const filledStars = [...Array(Math.floor(rate))];
+  const [rateMap, setRateMap] = useState([]);
 
   useEffect(() => {
     //Ao cair no catch, enviar para a página 'em construção quando pronta'
     apiProducts
       .getProductsID(params.id)
       .then((res) => {
-        setProduct({ ...res.data, rate });
+        setProduct(res.data);
+        setRateMap([...Array(Math.floor(res.data.rate))]);
       })
       .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -112,20 +111,20 @@ export default function ProductPage() {
                   <Skeleton style={{ height: "19px", width: "45px" }} />
                 ) : (
                   <>
-                    {rate === 0 && (
+                    {product.rate === 0 && (
                       <FaRegStar style={{ color: "rgb(250,250,0)" }} />
                     )}
-                    {filledStars.length >= 1 &&
-                      filledStars.map((s, index) => (
+                    {rateMap.length >= 1 &&
+                      rateMap.map((s, index) => (
                         <FaStar
                           key={index}
                           style={{ color: "rgb(250,250,0)" }}
                         />
                       ))}
-                    {rate % 1 !== 0 && (
+                    {product.rate % 1 !== 0 && (
                       <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
                     )}
-                    ({Number(rate).toFixed(1)})
+                    ({Number(product.rate).toFixed(1)})
                   </>
                 )}
               </Rate>

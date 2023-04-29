@@ -21,12 +21,8 @@ export default function HomePage() {
       .then((res) => {
         const products = [...res.data];
         const middleIndex = Math.floor(products.length / 2);
-        const firstHalf = products.slice(0, middleIndex).map((p) => {
-          return { ...p, review: (Math.random() * 5).toFixed(1) };
-        });
-        const secondHalf = products.slice(middleIndex).map((p) => {
-          return { ...p, review: (Math.random() * 5).toFixed(1) };
-        });
+        const firstHalf = products.slice(0, middleIndex);
+        const secondHalf = products.slice(middleIndex);
         setNewProducts(firstHalf);
         setHotDeals(secondHalf);
       })

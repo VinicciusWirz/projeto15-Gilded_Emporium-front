@@ -4,13 +4,10 @@ import { DescriptionContainer, ProductItem } from "./styles";
 
 export default function ProductsListItems({ item }) {
   const navigate = useNavigate();
-  const { _id, name, picture, description, price, review } = item;
+  const { _id, name, picture, description, price, rate } = item;
   return (
     <>
-      <ProductItem
-        onClick={() => navigate(`/produto/${_id}?rate=${review}`)}
-        key={_id}
-      >
+      <ProductItem onClick={() => navigate(`/produto/${_id}`)} key={_id}>
         <img src={picture} alt={name} />
         <h3>{name}</h3>
         <DescriptionContainer>
@@ -24,14 +21,14 @@ export default function ProductsListItems({ item }) {
             maximumFractionDigits: 2,
           })}
           <div>
-            {Number(review) > 4.5 ? (
+            {Number(rate) > 4.5 ? (
               <FaStar style={{ color: "rgb(250,250,0)" }} />
-            ) : Number(review) > 1 ? (
+            ) : Number(rate) > 1 ? (
               <FaStarHalfAlt style={{ color: "rgb(250,250,0)" }} />
             ) : (
               <FaRegStar style={{ color: "rgb(250,250,0)" }} />
             )}
-            ({review})
+            ({rate})
           </div>
         </div>
       </ProductItem>
