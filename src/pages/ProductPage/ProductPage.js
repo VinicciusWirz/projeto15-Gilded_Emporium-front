@@ -34,6 +34,11 @@ export default function ProductPage() {
 
   useEffect(() => {
     //Ao cair no catch, enviar para a página 'em construção quando pronta'
+    fetchProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function fetchProduct() {
     apiProducts
       .getProductsID(params.id)
       .then((res) => {
@@ -42,8 +47,7 @@ export default function ProductPage() {
         setRateMap(renderRate);
       })
       .catch((err) => console.log(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
 
   function addToCart(id) {
     if (token) {

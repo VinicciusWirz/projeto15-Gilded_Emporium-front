@@ -36,7 +36,7 @@ function App() {
 
 const PagesContainer = styled.main`
   background: #fafafa;
-  padding-top: 10%;
+  padding-top: 100px;
   min-height: 100vh;
   height: 100%;
   width: 100%;

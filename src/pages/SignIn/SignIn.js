@@ -18,7 +18,7 @@ export default function SignIn() {
   async function login(e) {
     e.preventDefault();
 
-    const URL = process.env.REACT_APP_API_BASE_URL;
+    const URL = process.env.REACT_APP_API_URL;
     const body = { ...form };
 
     if (form.email === "" || form.password === "") {
@@ -29,75 +29,87 @@ export default function SignIn() {
       const res = await axios.post(`${URL}/sign-in`, body);
       setToken(res.data.token);
       setName(res.data.name);
+      const localData = JSON.stringify({
+        token: res.data.token,
+        name: res.data.name,
+      });
+      localStorage.setItem("auth", localData);
+
       navigate("/");
     } catch (err) {
-      alert(err.response.data.message);
+      alert(err.response.message);
     }
   }
 
   return (
-    <Wrapper>
+    <PageView>
       <Container>
-        <h1>Faça seu login</h1>
+        <h6>Faça seu login</h6>
 
-        <InputField>
-          <p>Seu e-mail</p>
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={form.email}
-            onChange={handleForm}
-            name="email"
-            required
-          />
-          <p>Sua senha</p>
-          <input
-            type="password"
-            placeholder="Senha"
-            value={form.password}
-            onChange={handleForm}
-            name="password"
-            required
-          />
+        <Form>
+          <label>
+            Seu e-mail
+            <input
+              type="email"
+              placeholder="E-mail"
+              value={form.email}
+              onChange={handleForm}
+              name="email"
+              required
+            />
+          </label>
+          <label>
+            Sua senha
+            <input
+              type="password"
+              placeholder="Senha"
+              value={form.password}
+              onChange={handleForm}
+              name="password"
+              required
+            />
+          </label>
 
           <button type="submit" onClick={login}>
-            Continuar
+            Entrar
           </button>
-        </InputField>
-        <Link to={"/cadastro"}>
-          Ainda não tem cadastro? <br /> Clique aqui para fazer o registro
-        </Link>
+        </Form>
+        <LinkStyle>
+          <Link to={"/cadastro"}>Ainda não tem cadastro?</Link>
+          <Link to={"/cadastro"}>Clique aqui para fazer seu registro</Link>
+        </LinkStyle>
       </Container>
-    </Wrapper>
+    </PageView>
   );
 }
 
-const Wrapper = styled.div`
+const PageView = styled.div`
+  padding-top: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 80vh;
-  overflow-y: hidden;
+  padding-bottom: 100px;
 `;
 
 const Container = styled.div`
   background-color: #fafafa;
+  padding: 51px 0px;
   box-sizing: border-box;
-  width: 500px;
+  width: 39%;
   min-height: 400px;
   margin: 0 auto;
-  border-radius: 2rem;
+  border-radius: 10px;
   box-shadow: 0 0 10px 0 rgba(189, 189, 189, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  h1 {
+  gap: 25px;
+  h6 {
     text-align: center;
     font-size: 18px;
     font-weight: 600;
     font-family: "Poppins", sans-serif;
-    padding-top: 2rem;
     color: #0f0f0f;
   }
 
@@ -106,65 +118,75 @@ const Container = styled.div`
     font-size: 15px;
     font-weight: 500;
     font-family: "Poppins", sans-serif;
-    color: #0f0f0f;
-    margin-bottom: 2rem;
-    margin-left: 9rem;
-    width: fit-content;
+    color: #0047ff;
     display: flex;
-  }
-
-  a:visited {
-    color: #777;
   }
 `;
 
-const InputField = styled.div`
-  font-family: "Poppins", sans-serif;
-  font-size: 15px;
-  font-weight: 500;
+const Form = styled.form`
   display: flex;
   flex-direction: column;
-  margin: auto;
-  width: 304px;
-  padding-top: 2rem;
   align-items: center;
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 22px;
+  color: #000000;
+  width: 100%;
+  gap: 15px;
 
-  p {
-    text-align: left;
-    align-self: flex-start;
-    color: #0f0f0f;
-    text-indent: 5px;
+  label {
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
   }
-
-  input,
+  input {
+    background: #f2f2f2;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 9px;
+    border: none;
+    font-family: "Raleway";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    padding: 9px 11px;
+    height: 53px;
+    &::placeholder {
+      color: #7b7b7b;
+    }
+    &:focus {
+      outline: 1px solid #dbdbdb;
+    }
+  }
   button {
-    width: 300px;
-    height: 25px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    outline: none;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 15px;
+    width: 41%;
+    height: 53px;
+    border: none;
+    margin-top: 30px;
+    background: #90ff9c;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 9px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #000000;
   }
-
-  button {
-    font-size: 17px;
-    font-weight: 500;
-    font-family: "Poppins", sans-serif;
-    line-height: 14px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #ddd;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-
-  input::placeholder {
-    font-family: "Poppins", sans-serif;
-    font-size: 15px;
-    text-indent: 5px;
-  }
+`;
+const LinkStyle = styled.div`
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
 `;

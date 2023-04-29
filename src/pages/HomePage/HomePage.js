@@ -18,6 +18,10 @@ export default function HomePage() {
   const arrayPlaceholder = [...Array(10)];
 
   useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  function fetchProducts() {
     apiProducts
       .getProducts()
       .then((res) => {
@@ -31,7 +35,7 @@ export default function HomePage() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }
 
   return (
     <PageContainer>
