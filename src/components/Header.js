@@ -31,9 +31,10 @@ export default function Header() {
             <IoPersonOutline size={25} cursor="pointer" />
             <AuthText>
               {authContext.token ? (
-                <p>
-                  Olá, <br /> {authContext.name}
-                </p>
+                <>
+                  <p>Olá, {authContext.name}</p>
+                  <div style={{ cursor: "pointer" }}>Minha conta</div>
+                </>
               ) : (
                 <>
                   <p>Olá, Anônimo(a)</p>
@@ -46,7 +47,11 @@ export default function Header() {
             </AuthText>
           </Auth>
           <Cart>
-            <BsCart size={25} cursor="pointer" onClick={() => navigate('/carrinho')}/>
+            <BsCart
+              size={25}
+              cursor="pointer"
+              onClick={() => navigate("/carrinho")}
+            />
             {cart && <p>{cart.length}</p>}
           </Cart>
         </ClientArea>
@@ -159,13 +164,17 @@ const AuthText = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 5px;
+  position: relative;
   p {
+    overflow-x: hidden;
     font-family: "Raleway";
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
     line-height: 19px;
     color: #0c0404;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 `;
 
