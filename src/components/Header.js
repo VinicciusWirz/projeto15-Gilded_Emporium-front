@@ -46,7 +46,7 @@ export default function Header() {
             </AuthText>
           </Auth>
           <Cart>
-            <BsCart size={25} cursor="pointer" />
+            <BsCart size={25} cursor="pointer" onClick={() => navigate('/carrinho')}/>
             {cart && <p>{cart.length}</p>}
           </Cart>
         </ClientArea>
