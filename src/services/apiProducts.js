@@ -9,5 +9,15 @@ function getProductsID(id) {
   return axios.get(`${url}/${id}`);
 }
 
-const apiProducts = { getProducts, getProductsID };
+function getProductsMany(products) {
+  const productsIds = products.map((p) => p.productId).join(",");
+  const config = {
+    headers: {
+      Filter: JSON.stringify(productsIds),
+    },
+  };
+  return axios.get(`${url}/cart/items`, config);
+}
+
+const apiProducts = { getProducts, getProductsID, getProductsMany };
 export default apiProducts;

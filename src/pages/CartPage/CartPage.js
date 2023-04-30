@@ -1,0 +1,284 @@
+import { useContext, useEffect, useState } from "react";
+import { BsFillTrash3Fill } from "react-icons/bs";
+import styled from "styled-components";
+import AuthContext from "../../Context/AuthContext";
+import CartContext from "../../Context/CartContext";
+import apiCart from "../../services/apiCart";
+import apiProducts from "../../services/apiProducts";
+
+export default function CartPage() {
+  const { cart } = useContext(CartContext);
+  const { token } = useContext(AuthContext);
+  const [fullCart, setFullCart] = useState([]);
+  const [renderCart, setRenderCart] = useState([]);
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    apiProducts
+      .getProductsMany(cart)
+      .then(({ data }) => {
+        const countedArray = countAmount(data);
+        subtotal(data);
+        setFullCart(data);
+        setRenderCart(countedArray);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  function countAmount(array) {
+    const counts = {};
+    array.forEach((p) => {
+      if (!counts[p._id]) {
+        counts[p._id] = 1;
+      } else {
+        counts[p._id]++;
+      }
+    });
+    return array
+      .filter((p) => counts[p._id] === 1)
+      .map((p) => ({ ...p, amount: counts[p._id] }));
+  }
+  function subtotal(array) {
+    const totalSum = array.reduce((acc, product) => {
+      return acc + product.price;
+    }, 0);
+    const convertToCurrency = (totalSum / 100).toLocaleString("pt-BR", {
+      style: "decimal",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    setTotal(convertToCurrency);
+  }
+  function removeItem(e, id){
+    e.stopPropagation();
+    alert('Função em desenvolvimento')
+  }
+  return (
+    <MainView>
+      <Container>
+        <ProductsList>
+          {renderCart.map((p) => (
+            <Product key={p.name} onClick={() => console.log('e')}>
+              <img src={p.picture} alt={p.name} />
+              <ProductInfo>
+                <Description>
+                  <h2>{p.name}</h2>
+                  <span>{p.description}</span>
+                </Description>
+                <p>
+                  R$:{" "}
+                  {(p.price / 100).toLocaleString("pt-BR", {
+                    style: "decimal",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+              </ProductInfo>
+              <ProductOptions>
+                <BsFillTrash3Fill size="18px" cursor="pointer" onClick={(e) => removeItem(e, p._id)} />
+                <div>Quantidade: {p.amount}</div>
+              </ProductOptions>
+            </Product>
+          ))}
+        </ProductsList>
+        <OrderContainer>
+          <OrderInfo>
+            <Subtotal>
+              <div>Subtotal:</div>
+              <div>{renderCart && `R$${total}`}</div>
+            </Subtotal>
+            <Quantity>
+              <div>Total de items:</div>
+              <div>
+                {renderCart.length} {renderCart.length > 1 ? "itens" : "item"}
+              </div>
+            </Quantity>
+            <ButtonWrapper>
+              <button disabled={!token}>Finalizar pedido</button>
+              <button disabled={!token}>Limpar carrinho</button>
+            </ButtonWrapper>
+          </OrderInfo>
+        </OrderContainer>
+      </Container>
+    </MainView>
+  );
+}
+const Subtotal = styled.div`
+  width: 100%;
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+  color: #000000;
+`;
+
+const MainView = styled.main`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 50px;
+  padding-top: 20px;
+`;
+const Container = styled.div`
+  width: 79%;
+  height: 80%;
+  min-height: 60vh;
+  background: #ffffff;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  display: flex;
+`;
+const ProductsList = styled.ul`
+  width: 100%;
+  min-height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+const Product = styled.li`
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 154px;
+  width: 100%;
+  background: #ffffff;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  gap: 15px;
+  img {
+    object-fit: contain;
+    height: 100%;
+    width: 156px;
+    min-width: 156px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+  }
+`;
+const OrderContainer = styled.section`
+  width: 25%;
+  height: 100%;
+  padding: 20px 20px 20px 0px;
+`;
+const OrderInfo = styled.article`
+  background: #ffffff;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  gap: 20px;
+`;
+
+const Quantity = styled.div`
+  width: 100%;
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+  color: #000000;
+`;
+
+const ProductOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  height: 100%;
+  justify-content: space-between;
+  min-width: 33%;
+  div {
+    font-family: "Raleway";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    display: flex;
+    align-items: center;
+
+    color: #000000;
+  }
+`;
+
+const ProductInfo = styled.div`
+  width: 100%;
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  h2 {
+    height: 20%;
+    font-family: "Raleway";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 22px;
+    display: flex;
+    align-items: flex-start;
+    color: #000000;
+    height: 44px;
+  }
+  span {
+    height: 60%;
+    font-family: "Raleway";
+    font-style: normal;
+    font-weight: 100;
+    font-size: 19px;
+    line-height: 22px;
+    display: flex;
+    color: #000000;
+  }
+  p {
+    height: 20%;
+    min-height: 20%;
+    font-family: "Raleway";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    color: #000000;
+  }
+`;
+const ButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid lightgray;
+  padding-top: 50px;
+  gap: 25px;
+  button {
+    border: none;
+    background: #e8e8e8;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    font-family: "Raleway";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    padding: 14px 0px;
+    &:first-child {
+      background: #91ff9c;
+    }
+  }
+`;
+const Description = styled.div`
+
+`

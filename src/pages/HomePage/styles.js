@@ -34,49 +34,6 @@ export const MainView = styled.section`
   margin: 0px 72px;
 `;
 
-export const MenuNav = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  border-radius: 0px 0px 5px 5px;
-  background: #ffff;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-  button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 20px 0px;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    display: flex;
-    align-items: center;
-    color: #000000;
-    :hover {
-      p {
-        transform: scale(1.08);
-      }
-    }
-    p {
-      width: 100%;
-      height: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.1s ease-in-out;
-    }
-    &:not(:first-child) {
-      div {
-        border-left: 1px solid gray;
-      }
-    }
-    &:first-child {
-      font-weight: 700;
-    }
-  }
-`;
-
 export const ProductsSections = styled.article`
   height: 500px;
   width: 100%;
@@ -100,7 +57,7 @@ export const ProductsSections = styled.article`
   }
 `;
 
-export const ProductList = styled.ul`
+export const ProductListStyle = styled.ul`
   height: 100%;
   max-width: 95%;
   overflow-x: scroll;
@@ -114,6 +71,8 @@ export const ProductList = styled.ul`
   display: flex;
   align-items: center;
   gap: 19px;
+  padding-left: 15px;
+  padding-right: 15px;
   &::-webkit-scrollbar {
     width: 12px;
     height: 12px;
@@ -211,3 +170,10 @@ export const DescriptionContainer = styled.section`
     text-overflow: ellipsis;
   }
 `;
+
+export const LastSkeleton = styled.div`
+span{
+  width:100%;
+}
+
+`
