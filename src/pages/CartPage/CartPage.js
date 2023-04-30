@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { BsFillTrash3Fill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AuthContext from "../../Context/AuthContext";
 import CartContext from "../../Context/CartContext";
-import apiCart from "../../services/apiCart";
 import apiProducts from "../../services/apiProducts";
 
 export default function CartPage() {
@@ -12,31 +12,32 @@ export default function CartPage() {
   const [fullCart, setFullCart] = useState([]);
   const [renderCart, setRenderCart] = useState([]);
   const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
   useEffect(() => {
-    apiProducts
-      .getProductsMany(cart)
-      .then(({ data }) => {
-        const countedArray = countAmount(data);
-        subtotal(data);
-        setFullCart(data);
-        setRenderCart(countedArray);
-      })
-      .catch((err) => console.log(err));
+    if (cart) {
+      apiProducts
+        .getProductsMany(cart)
+        .then(({ data }) => {
+          const countedArray = countAmount(cart, data);
+          subtotal(data);
+          setFullCart(data);
+          setRenderCart(countedArray);
+        })
+        .catch((err) => console.log(err));
+    }
   }, []);
 
-  function countAmount(array) {
-    const counts = {};
+  function countAmount(array, data) {
+    let counts = data.reduce((acc, curr) => {
+      return { ...acc, [curr._id]: { ...curr, amount: 0 } };
+    }, {});
+
     array.forEach((p) => {
-      if (!counts[p._id]) {
-        counts[p._id] = 1;
-      } else {
-        counts[p._id]++;
-      }
+      counts[p.productId].amount++;
     });
-    return array
-      .filter((p) => counts[p._id] === 1)
-      .map((p) => ({ ...p, amount: counts[p._id] }));
+    return Object.values(counts);
   }
+
   function subtotal(array) {
     const totalSum = array.reduce((acc, product) => {
       return acc + product.price;
@@ -48,53 +49,70 @@ export default function CartPage() {
     });
     setTotal(convertToCurrency);
   }
-  function removeItem(e, id){
+
+  function removeItem(e, id) {
     e.stopPropagation();
-    alert('Função em desenvolvimento')
+    alert("Função em desenvolvimento");
+  }
+  function clearCart() {
+    if (!token) {
+      localStorage.removeItem("cart");
+      window.location.reload();
+    }
   }
   return (
     <MainView>
       <Container>
         <ProductsList>
-          {renderCart.map((p) => (
-            <Product key={p.name} onClick={() => console.log('e')}>
-              <img src={p.picture} alt={p.name} />
-              <ProductInfo>
-                <Description>
-                  <h2>{p.name}</h2>
-                  <span>{p.description}</span>
-                </Description>
-                <p>
-                  R$:{" "}
-                  {(p.price / 100).toLocaleString("pt-BR", {
-                    style: "decimal",
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </p>
-              </ProductInfo>
-              <ProductOptions>
-                <BsFillTrash3Fill size="18px" cursor="pointer" onClick={(e) => removeItem(e, p._id)} />
-                <div>Quantidade: {p.amount}</div>
-              </ProductOptions>
-            </Product>
-          ))}
+          {cart ? (
+            renderCart.map((p) => (
+              <Product key={p.name} onClick={() => navigate(`/produto/${p._id}`)}>
+                <img src={p.picture} alt={p.name} />
+                <ProductInfo>
+                  <Description>
+                    <h2>{p.name}</h2>
+                    <span>{p.description}</span>
+                  </Description>
+                  <p>
+                    R$:{" "}
+                    {(p.price / 100).toLocaleString("pt-BR", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </p>
+                </ProductInfo>
+                <ProductOptions>
+                  <BsFillTrash3Fill
+                    size="18px"
+                    cursor="pointer"
+                    onClick={(e) => removeItem(e, p._id)}
+                  />
+                  <div>Quantidade: {p.amount}</div>
+                </ProductOptions>
+              </Product>
+            ))
+          ) : (
+            <EmptyCart>Seu carrinho está vazio.</EmptyCart>
+          )}
         </ProductsList>
         <OrderContainer>
           <OrderInfo>
             <Subtotal>
               <div>Subtotal:</div>
-              <div>{renderCart && `R$${total}`}</div>
+              <div>{renderCart.length > 0 ? `R$${total}` : "R$00,00"}</div>
             </Subtotal>
             <Quantity>
               <div>Total de items:</div>
               <div>
-                {renderCart.length} {renderCart.length > 1 ? "itens" : "item"}
+                {fullCart.length} {fullCart.length > 1 ? "itens" : "item"}
               </div>
             </Quantity>
             <ButtonWrapper>
               <button disabled={!token}>Finalizar pedido</button>
-              <button disabled={!token}>Limpar carrinho</button>
+              <button disabled={!cart} onClick={clearCart}>
+                Limpar carrinho
+              </button>
             </ButtonWrapper>
           </OrderInfo>
         </OrderContainer>
@@ -212,7 +230,6 @@ const ProductOptions = styled.div`
 
 const ProductInfo = styled.div`
   width: 100%;
-  /* height: 100%; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -279,6 +296,16 @@ const ButtonWrapper = styled.div`
     }
   }
 `;
-const Description = styled.div`
+const Description = styled.div``;
 
-`
+const EmptyCart = styled.div`
+  align-self: center;
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  color: #000000;
+`;
