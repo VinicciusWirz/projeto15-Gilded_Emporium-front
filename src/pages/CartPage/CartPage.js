@@ -1,37 +1,100 @@
+import { useContext, useEffect, useState } from "react";
 import { BsFillTrash3Fill } from "react-icons/bs";
 import styled from "styled-components";
+import AuthContext from "../../Context/AuthContext";
+import CartContext from "../../Context/CartContext";
+import apiCart from "../../services/apiCart";
+import apiProducts from "../../services/apiProducts";
 
 export default function CartPage() {
+  const { cart } = useContext(CartContext);
+  const { token } = useContext(AuthContext);
+  const [fullCart, setFullCart] = useState([]);
+  const [renderCart, setRenderCart] = useState([]);
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    apiProducts
+      .getProductsMany(cart)
+      .then(({ data }) => {
+        const countedArray = countAmount(data);
+        subtotal(data);
+        setFullCart(data);
+        setRenderCart(countedArray);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  function countAmount(array) {
+    const counts = {};
+    array.forEach((p) => {
+      if (!counts[p._id]) {
+        counts[p._id] = 1;
+      } else {
+        counts[p._id]++;
+      }
+    });
+    return array
+      .filter((p) => counts[p._id] === 1)
+      .map((p) => ({ ...p, amount: counts[p._id] }));
+  }
+  function subtotal(array) {
+    const totalSum = array.reduce((acc, product) => {
+      return acc + product.price;
+    }, 0);
+    const convertToCurrency = (totalSum / 100).toLocaleString("pt-BR", {
+      style: "decimal",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    setTotal(convertToCurrency);
+  }
+  function removeItem(e, id){
+    e.stopPropagation();
+    alert('Função em desenvolvimento')
+  }
   return (
     <MainView>
       <Container>
         <ProductsList>
-          <Product>
-            <img />
-            <ProductInfo>
-              <h2>Produto</h2>
-              <span>Descrição</span>
-              <p>R$: 50,00</p>
-            </ProductInfo>
-            <ProductOptions>
-              <BsFillTrash3Fill size="18px" cursor="pointer" />
-              <div>Quantidade: 1</div>
-            </ProductOptions>
-          </Product>
+          {renderCart.map((p) => (
+            <Product key={p.name} onClick={() => console.log('e')}>
+              <img src={p.picture} alt={p.name} />
+              <ProductInfo>
+                <Description>
+                  <h2>{p.name}</h2>
+                  <span>{p.description}</span>
+                </Description>
+                <p>
+                  R$:{" "}
+                  {(p.price / 100).toLocaleString("pt-BR", {
+                    style: "decimal",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+              </ProductInfo>
+              <ProductOptions>
+                <BsFillTrash3Fill size="18px" cursor="pointer" onClick={(e) => removeItem(e, p._id)} />
+                <div>Quantidade: {p.amount}</div>
+              </ProductOptions>
+            </Product>
+          ))}
         </ProductsList>
         <OrderContainer>
           <OrderInfo>
             <Subtotal>
               <div>Subtotal:</div>
-              <div>R$50,00</div>
+              <div>{renderCart && `R$${total}`}</div>
             </Subtotal>
             <Quantity>
               <div>Total de items:</div>
-              <div>1 item</div>
+              <div>
+                {renderCart.length} {renderCart.length > 1 ? "itens" : "item"}
+              </div>
             </Quantity>
             <ButtonWrapper>
-              <button>Finalizar pedido</button>
-              <button>Limpar carrinho</button>
+              <button disabled={!token}>Finalizar pedido</button>
+              <button disabled={!token}>Limpar carrinho</button>
             </ButtonWrapper>
           </OrderInfo>
         </OrderContainer>
@@ -103,7 +166,6 @@ const OrderContainer = styled.section`
   padding: 20px 20px 20px 0px;
 `;
 const OrderInfo = styled.article`
-  /* height: 100%; */
   background: #ffffff;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
   border-radius: 5px;
@@ -150,6 +212,10 @@ const ProductOptions = styled.div`
 
 const ProductInfo = styled.div`
   width: 100%;
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   height: 100%;
   h2 {
     height: 20%;
@@ -159,8 +225,9 @@ const ProductInfo = styled.div`
     font-size: 19px;
     line-height: 22px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     color: #000000;
+    height: 44px;
   }
   span {
     height: 60%;
@@ -212,3 +279,6 @@ const ButtonWrapper = styled.div`
     }
   }
 `;
+const Description = styled.div`
+
+`
