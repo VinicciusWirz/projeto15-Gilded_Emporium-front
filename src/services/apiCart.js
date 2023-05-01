@@ -19,5 +19,13 @@ function getCart(token) {
   return axios.get(url, configGen(token));
 }
 
-const apiCart = { addCartProduct, unloadCartProducts, getCart };
+function deleteCart(token) {
+  return axios.delete(`${url}/clear`, configGen(token));
+}
+
+function removeItem(id, token) {
+  return axios.delete(`${url}/remove/${id}`, configGen(token));
+}
+
+const apiCart = { addCartProduct, unloadCartProducts, getCart, deleteCart, removeItem };
 export default apiCart;

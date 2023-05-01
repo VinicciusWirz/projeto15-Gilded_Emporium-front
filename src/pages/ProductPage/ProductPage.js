@@ -57,7 +57,7 @@ export default function ProductPage() {
         .then(() => {
           alert("Produto adicionado ao carrinho");
           setLoadingCart(false);
-          sessionCart();
+          sessionCart(id);
         })
         .catch((err) => {
           alert(`Erro ${err.response.status}: ${err.response.data}`);

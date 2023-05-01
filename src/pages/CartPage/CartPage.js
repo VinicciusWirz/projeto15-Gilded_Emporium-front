@@ -4,32 +4,56 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AuthContext from "../../Context/AuthContext";
 import CartContext from "../../Context/CartContext";
+import apiCart from "../../services/apiCart";
 import apiProducts from "../../services/apiProducts";
 
 export default function CartPage() {
-  const { cart } = useContext(CartContext);
+  const { cart, setCart } = useContext(CartContext);
   const { token } = useContext(AuthContext);
-  const [fullCart, setFullCart] = useState([]);
   const [renderCart, setRenderCart] = useState([]);
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
   useEffect(() => {
+    if (cart.length > 0) {
+      renderProducts();
+    }
+  }, []);
+
+  function renderProducts() {
     if (cart) {
       apiProducts
         .getProductsMany(cart)
         .then(({ data }) => {
           const countedArray = countAmount(cart, data);
-          subtotal(data);
-          setFullCart(data);
+          subtotal(countedArray);
           setRenderCart(countedArray);
         })
         .catch((err) => console.log(err));
+    } else {
+      setRenderCart([]);
+      setTotal(0);
     }
-  }, []);
+  }
+
+  function renderQuery(res) {
+    if (res.length > 0) {
+      apiProducts
+        .getProductsMany(res)
+        .then(({ data }) => {
+          const countedArray = countAmount(res, data);
+          subtotal(countedArray);
+          setRenderCart(countedArray);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      setRenderCart([]);
+      setTotal(0);
+    }
+  }
 
   function countAmount(array, data) {
-    let counts = data.reduce((acc, curr) => {
-      return { ...acc, [curr._id]: { ...curr, amount: 0 } };
+    let counts = data.reduce((acc, product) => {
+      return { ...acc, [product._id]: { ...product, amount: 0 } };
     }, {});
 
     array.forEach((p) => {
@@ -40,7 +64,7 @@ export default function CartPage() {
 
   function subtotal(array) {
     const totalSum = array.reduce((acc, product) => {
-      return acc + product.price;
+      return acc + product.price * product.amount;
     }, 0);
     const convertToCurrency = (totalSum / 100).toLocaleString("pt-BR", {
       style: "decimal",
@@ -52,21 +76,81 @@ export default function CartPage() {
 
   function removeItem(e, id) {
     e.stopPropagation();
-    alert("Função em desenvolvimento");
-  }
-  function clearCart() {
-    if (!token) {
-      localStorage.removeItem("cart");
-      window.location.reload();
+    const confirmation =
+      "Você está prestes a remover 1 item do carrinho, deseja continuar?";
+    if (window.confirm(confirmation)) {
+      if (token) {
+        apiCart
+          .removeItem(id, token)
+          .then(() => {
+            updateCart();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        const localCart = removeItemFromLocal(id);
+        let newCart = [];
+        if (localCart.length > 0) {
+          localStorage.setItem("cart", JSON.stringify(localCart));
+          newCart = localCart;
+        } else {
+          localStorage.removeItem("cart");
+        }
+        renderQuery(newCart);
+        setCart(newCart);
+      }
     }
   }
+
+  function clearCart() {
+    const confirmation =
+      "Você está prestes a remover todos os items do carrinho, deseja continuar?";
+    if (window.confirm(confirmation)) {
+      if (!token) {
+        localStorage.removeItem("cart");
+        window.location.reload();
+      } else {
+        apiCart
+          .deleteCart(token)
+          .then(() => {
+            updateCart();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    }
+  }
+
+  function updateCart() {
+    apiCart
+      .getCart(token)
+      .then((res) => {
+        if (res.data.length !== 0) {
+          const serverCart = JSON.stringify(res.data);
+          localStorage.setItem("sessionCart", serverCart);
+        } else {
+          localStorage.removeItem("sessionCart");
+        }
+        setCart(res.data);
+        renderQuery(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   return (
     <MainView>
       <Container>
         <ProductsList>
           {cart ? (
             renderCart.map((p) => (
-              <Product key={p.name} onClick={() => navigate(`/produto/${p._id}`)}>
+              <Product
+                key={p.name}
+                onClick={() => navigate(`/produto/${p._id}`)}
+              >
                 <img src={p.picture} alt={p.name} />
                 <ProductInfo>
                   <Description>
@@ -105,7 +189,7 @@ export default function CartPage() {
             <Quantity>
               <div>Total de items:</div>
               <div>
-                {fullCart.length} {fullCart.length > 1 ? "itens" : "item"}
+                {cart.length} {cart.length > 1 ? "itens" : "item"}
               </div>
             </Quantity>
             <ButtonWrapper>
@@ -120,6 +204,22 @@ export default function CartPage() {
     </MainView>
   );
 }
+
+function removeItemFromLocal(id) {
+  const localCart = JSON.parse(localStorage.getItem("cart"));
+  let indexToRemove = -1;
+  localCart.forEach((p, index) => {
+    if (p.productId === id) {
+      indexToRemove = index;
+      return;
+    }
+  });
+  if (indexToRemove !== -1) {
+    localCart.splice(indexToRemove, 1);
+  }
+  return localCart;
+}
+
 const Subtotal = styled.div`
   width: 100%;
   font-family: "Raleway";
@@ -296,7 +396,17 @@ const ButtonWrapper = styled.div`
     }
   }
 `;
-const Description = styled.div``;
+const Description = styled.div`
+  span {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    line-height: 28px;
+  }
+`;
 
 const EmptyCart = styled.div`
   align-self: center;
