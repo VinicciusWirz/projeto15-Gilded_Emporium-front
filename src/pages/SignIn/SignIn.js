@@ -44,7 +44,7 @@ export default function SignIn() {
         localStorage.setItem("sessionCart", serverCart);
         setCart(res.data.cart);
       }
-
+      localStorage.removeItem("cart");
       navigate("/");
     } catch (err) {
       alert(`Erro ${err.status}: ${err.response.message}`);
